@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,8 +15,11 @@ namespace SentimentAnalysisDemo
     {
         //private static string trainDataPath = @"D:\csharpProject\MLnetApp\FirstMLnetProject\SentimentAnalysisDemo\data\yelp_labelled.txt";
         //private static string trainDataPath = @"D:\csharpProject\MLnetApp\FirstMLnetProject\SentimentAnalysisDemo\data\trainData.tsv";
-        private static string trainDataPath = @"D:\csharpProject\MLnetApp\FirstMLnetProject\SentimentAnalysisDemo\data\trainkorean.txt";
-        private static string testDataPath = @"D:\csharpProject\MLnetApp\FirstMLnetProject\SentimentAnalysisDemo\data\testData.tsv";
+        //private static string trainDataPath = @"D:\csharpProject\MLnetApp\FirstMLnetProject\SentimentAnalysisDemo\data\trainkorean.txt";
+        //private static string testDataPath = @"D:\csharpProject\MLnetApp\FirstMLnetProject\SentimentAnalysisDemo\data\testData.tsv";
+
+        private static string trainDataPath = Path.Combine(Environment.CurrentDirectory, "data", "trainkorean.txt");
+        private static string testDataPath = Path.Combine(Environment.CurrentDirectory, "data", "testData.tsv");
 
         static void Main(string[] args)
         {
