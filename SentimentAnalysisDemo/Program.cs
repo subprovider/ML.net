@@ -18,7 +18,12 @@ namespace SentimentAnalysisDemo
         //private static string trainDataPath = @"D:\csharpProject\MLnetApp\FirstMLnetProject\SentimentAnalysisDemo\data\trainkorean.txt";
         //private static string testDataPath = @"D:\csharpProject\MLnetApp\FirstMLnetProject\SentimentAnalysisDemo\data\testData.tsv";
 
-        private static string trainDataPath = Path.Combine(Environment.CurrentDirectory, "data", "trainkorean.txt");
+        /*
+         *  train data 는 최소 50건이 되야 positivie, negativie 에 대한 학습을 시킬 수 있다.
+         */
+       // private static string trainDataPath = Path.Combine(Environment.CurrentDirectory, "data", "trainkorean.txt");
+        private static string trainDataPath = Path.Combine(Environment.CurrentDirectory, "data", "senitimentKorean.txt");
+
         private static string testDataPath = Path.Combine(Environment.CurrentDirectory, "data", "testData.tsv");
 
         static void Main(string[] args)
@@ -50,15 +55,34 @@ namespace SentimentAnalysisDemo
             // 1. Read in my dataset for training and testing
             IDataView trainData = mlContext.Data.LoadFromTextFile<SentimentData>(trainDataPath, hasHeader: false);
 
-            // 2. Split the dataset for model training and testing
+            /*
+             * Split the dataset for model training and testing
+             * testFraction --> 데이터 분할 백분율
+             * TrainTestData --> struct 로 TestSet(IDataView), TrainSet(IDataView) 을 포함한다.
+             * IDataView --> interface 쿼리 연산자 (변환)의 입력 및 출력 이것은 LINQ의 IEnumerable <T> 와 비슷한 기본 데이터 파이프 라인 유형 입니다.
+             *               interface is the central concept of "data" in ML.NET.
+             */
+
             TrainTestData splitDataView = mlContext.Data.TrainTestSplit(trainData, testFraction: 0.2);
 
             return splitDataView;
         }
 
 
+        /*
+         * BuildAndTrainModel methods 설명
+         * 1. 데이터를 추출하고 변환합니다.
+         * 2. 모델을 학습시킵니다.
+         * 3. 테스트 데이터를 기반으로 감정을 예측합니다.
+         * 4. 모델을 반환합니다.
+         */
         public static ITransformer BuildAndTrainModel(MLContext mlContext, IDataView splitTrainSet)
         {
+            /*
+             * FeaturizeText(TransformsCatalog+TextTransforms, String, String)
+             * var textPipeline = mlContext.Transforms.Text.FeaturizeText("Features", "Text");
+             */
+
             var estimator = mlContext.Transforms.Text.FeaturizeText(outputColumnName: "Features", inputColumnName: nameof(SentimentData.SentimentText))
                 .Append(mlContext.BinaryClassification.Trainers.SdcaLogisticRegression(labelColumnName: "Label", featureColumnName: "Features"));
 
@@ -76,6 +100,12 @@ namespace SentimentAnalysisDemo
             IDataView predictions = model.Transform(splitTestSet);
             CalibratedBinaryClassificationMetrics metrics = mlContext.BinaryClassification.Evaluate(predictions, "Label");
 
+            /*
+             * Accuracy 메트릭은 테스트 세트에서 정확한 예측의 비율인 모델 정확도를 가져옵니다.
+             * AreaUnderRocCurve 메트릭은 모델이 긍정 및 부정 클래스 분류의 정확도를 자신하는 정도를 표시합니다. AreaUnderRocCurve를 가능한 근접하게 하고자 합니다.
+             * F1Score 메트릭은 모델의 F1 점수를 가져옵니다. 정밀도와 회수 사이의 균형을 측정한 값입니다. F1Score를 가능한 근접하게 하고자 합니다
+             */
+
             Console.WriteLine();
             Console.WriteLine("Model quality metrics evaluation");
             Console.WriteLine("--------------------------------");
@@ -92,7 +122,7 @@ namespace SentimentAnalysisDemo
             SentimentData sampleStatement = new SentimentData
             {
                 //SentimentText = "This was a very bad steak"
-                SentimentText = "사랑하지 않는 다."
+                SentimentText = "그건 좋아."
             };
 
             var resultPrediction = predictionFunction.Predict(sampleStatement);
@@ -114,12 +144,12 @@ namespace SentimentAnalysisDemo
                 new SentimentData
                 {
                     //SentimentText = "This was a horrible meal"
-                    SentimentText = "널 좋아해."
+                    SentimentText = "그건 좋아."
                 },
                 new SentimentData
                 {
                     //SentimentText = "I love this spaghetti."
-                    SentimentText = "널 좋아하지 않는다."
+                    SentimentText = "내건 나빠."
                 }
             };
 
