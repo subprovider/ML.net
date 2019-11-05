@@ -74,11 +74,5 @@
     <None Include="App.config" />
     <EmbeddedResource Include="wikipedia-detox-250-line-data.tsv" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\FirstMLnetProjectML.Model\FirstMLnetProjectML.Model.csproj">
-      <Project>{450be167-02bf-466f-b216-44bc9ec37c2c}</Project>
-      <Name>FirstMLnetProjectML.Model</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
