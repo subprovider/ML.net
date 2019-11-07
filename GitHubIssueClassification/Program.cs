@@ -27,8 +27,8 @@ namespace GitHubIssueClassification
         //private static string _testDataPath => Path.Combine(_appPath, "..", "..", "..", "Data", "issues_test.tsv");
         //private static string _modelPath => Path.Combine(_appPath, "..", "..", "..", "Models", "model.zip");
 
-        private static string _trainDataPath => Path.Combine(Environment.CurrentDirectory, "Data", "issues_train.csv");
-        private static string _testDataPath => Path.Combine(Environment.CurrentDirectory, "Data", "issues_test.tsv");
+        private static string _trainDataPath => Path.Combine(Environment.CurrentDirectory, "Data", "issues-train.csv");
+        private static string _testDataPath => Path.Combine(Environment.CurrentDirectory, "Data", "issues-test.tsv");
         private static string _modelPath => Path.Combine(Environment.CurrentDirectory, "Models", "model.zip");
 
         private static MLContext _mlContext;
